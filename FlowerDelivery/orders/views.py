@@ -4,6 +4,7 @@ from .forms import OrderForm
 from cart.models import Cart, CartItem
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
+from django.contrib import messages
 
 from django.conf import settings
 
@@ -36,7 +37,7 @@ def order_form(request):
             contact_phone = form.cleaned_data.get('phone')
             # Добавляем номер телефона в начало комментария, если он есть
             if contact_phone:
-                order.customer_comment = f"Телефон заказчика для связи с курьером: {contact_phone}\n{order.customer_comment or ''}"
+                order.customer_comment = f"Телефон заказчика: {contact_phone}\n{order.customer_comment or ''}"
 
             order.save()
 
@@ -48,7 +49,9 @@ def order_form(request):
 
             # Очищаем корзину
             cart_items.delete()
-            return redirect('main:index')
+
+            messages.success(request, 'Заказ успешно оформлен.')
+            return redirect('goods:flower_catalog')
     else:
         form = OrderForm()  # Уберите request.user
 
