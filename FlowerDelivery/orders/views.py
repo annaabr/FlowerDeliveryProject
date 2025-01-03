@@ -78,9 +78,44 @@ def order_form(request):
         'min_delivery_date': min_delivery_date,  # Передаем минимальную дату
     })
 
+
 @login_required
 def confirm_order(request):
     return render(request, 'orders/confirm_order.html', {
         **data,
         'active_page': 'order_form',
     })
+
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+
+    # Добавляем общую стоимость для каждого заказа
+    for order in orders:
+        order.total_price = sum(item.flower.price * item.quantity for item in order.orderitem_set.all())
+
+    return render(request, 'orders/order_history.html', {**data, 'orders': orders, 'active_page': 'order_history'})
+
+@login_required
+def repeat_order(request, order_id):
+    original_order = Order.objects.get(id=order_id, user=request.user)
+
+    # Создание нового заказа на основе оригинального
+    new_order = Order.objects.create(
+        user=request.user,
+        address=original_order.address,
+        delivery_date=original_order.delivery_date,
+        delivery_time_interval=original_order.delivery_time_interval,
+        customer_comment=original_order.customer_comment,
+        status='new'
+    )
+
+    for item in original_order.orderitem_set.all():
+        new_item = OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
+        print(f"Created new OrderItem: {new_item} for order {new_order.id}")
+
+#    for item in original_order.orderitem_set.all():
+#        OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
+
+    return redirect('orders:order_form')

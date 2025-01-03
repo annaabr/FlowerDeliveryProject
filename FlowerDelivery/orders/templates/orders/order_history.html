@@ -1,0 +1,36 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    История заказов
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">История заказов</h1>
+        {% if orders %}
+            <div class="order-list">
+                {% for order in orders %}
+                    <div class="order">
+                        <h3>Заказ от {{ order.created_at|date:"d.m.Y H:i" }}</h3>
+                        <div class="flowers">
+                            <p>Состав заказа:</p>
+                            <ul>
+                                {% for item in order.orderitem_set.all %}
+                                    <li>
+                                        <img src="{{ item.flower.image.url }}" alt="{{ item.flower.name }}" style="width: 100px;">
+                                        <strong>{{ item.flower.name }}</strong> - {{ item.quantity }} шт. - {{ item.flower.price }} руб.
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <p>Стоимость заказа: {{ order.total_price }} руб.</p>
+                        <a href="{% url 'orders:repeat_order' order.id %}" class="btn btn-primary">Повторить заказ</a>
+                    </div>
+                    <br><br><br>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>У вас пока нет заказов</p>
+        {% endif %}
+    </div>
+{% endblock %}
