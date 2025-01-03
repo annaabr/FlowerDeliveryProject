@@ -1,0 +1,16 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    Оставить отзыв на {{ flower.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Оставить отзыв на {{ flower.name }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Каталог {{ caption }}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center">Каталог цветов {{ caption }}</h1>
+
+        <div class="row">
+            {% for flower in flowers %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ flower.image.url }}" class="card-img-top" alt="Фотография {{ flower.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ flower.name }}</h5>
+
+                            {% if flower.average_rating %}
+                                <p class="card-text">Рейтинг: {{ flower.average_rating|floatformat:2 }} (из 5)</p>
+                            {% else %}
+                                <p class="card-text">У этого товара пока нет рейтинга</p>
+                            {% endif %}
+
+                            <p class="card-text">Цена: {{ flower.price }} руб.</h1></p>
+
+                            <a href="{% url 'reviews:flower_reviews' flower.id %}" class="btn btn-secondary">Отзывы на товар</a>
+                            <br> <br>
+
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'cart:add_to_cart' flower.id %}" class="btn btn-primary">Добавить в корзину</a>
+                                <br> <br>
+                                <a href="{% url 'reviews:create_review' flower.id %}" class="btn btn-primary">Оставить отзыв</a>
+                                <br> <br>
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}" class="btn btn-secondary">Войдите, чтобы добавить товар в корзину или оставить отзыв</a>
+                                <br> <br>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const messageContainer = document.getElementById('message-container');
+            if (messageContainer) {
+                messageContainer.style.display = 'block';
+
+                // Убираем сообщение через 5 секунд
+                setTimeout(() => {
+                    messageContainer.style.transition = 'opacity 0.5s'; // Добавляем плавную анимацию
+                    messageContainer.style.opacity = '0';
+
+                    // Ждем завершения анимации и затем скрываем элемент
+                    setTimeout(() => {
+                        messageContainer.style.display = 'none';
+                    }, 500); // Время должно совпадать с временем анимации
+                }, 5000); // 5000 мс = 5 секунд
+            }
+        });
+    </script>
+
+{% endblock %}

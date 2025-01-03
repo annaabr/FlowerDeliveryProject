@@ -1,0 +1,46 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+  Просмотр заказа
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Просмотр заказа</h2>
+        <a href="{% url 'cart:cart_view' %}" class="btn btn-danger">Отменить заказ</a>
+    </div>
+
+    <table class="table table-bordered my-3">
+        <thead>
+            <tr>
+                <th>Название товара</th>
+                <th>Количество</th>
+                <th>Цена (руб.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.flower.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.flower.price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Общая стоимость заказа: <span class="text-success">{{ total_price }}</span> руб.</h4>
+
+    {% if user.is_staff %}
+        {% if not user.profile.phone and not user.profile.address %}  <!-- Проверяем наличие данных профиля -->
+            <p class="text-danger">Для оформления заказа необходимо предварительно внести, свои данные в таблицу зарегистрированных пользователей.</p>
+            <a href="{% url 'accounts:profile' %}" class="btn btn-warning">Внести данные</a>
+        {% else %}
+            <button type="button" class="btn btn-success mt-3" onclick="window.location.href='{% url 'orders:order_form' %}'">Указать данные для оформления доставки</button>
+        {% endif %}
+    {% else %}
+        <button type="button" class="btn btn-success mt-3" onclick="window.location.href='{% url 'orders:order_form' %}'">Указать данные для оформления доставки</button>
+    {% endif %}
+</div>
+{% endblock %}

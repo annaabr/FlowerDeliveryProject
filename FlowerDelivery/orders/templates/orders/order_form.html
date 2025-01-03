@@ -1,0 +1,47 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    Оформление заказа
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Данные для доставки заказа</h1>
+
+        <a href="{% url 'cart:cart_view' %}" class="btn btn-secondary float-right">Отменить заказ</a>
+
+        <form method="POST" action="{% url 'orders:order_form' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Имя заказчика</label>
+                <input type="text" id="username" class="form-control" value="{{ user.username }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="address">Проверьте адрес доставки</label>
+                <input type="text" id="address" name="address" class="form-control" value="{{ user.profile.address }}" required>
+            </div>
+            <div class="form-group">
+                <label for="delivery_date">Укажите дату доставки</label>
+                <input type="date" id="delivery_date" name="delivery_date" class="form-control" required min="{{ min_delivery_date }}">
+            </div>
+            <div class="form-group">
+                <label for="delivery_time_interval">Выберите для доставки временной интервал</label>
+                <select id="delivery_time_interval" name="delivery_time_interval" class="form-control" required>
+                    {% for interval in delivery_time_intervals %}
+                        <option value="{{ interval }}" {% if interval == default_interval %}selected{% endif %}>{{ interval }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="phone">Уточните телефон для связи с курьером</label>
+                <input type="tel" id="phone" name="phone" class="form-control" value="{{ user.profile.phone }}" required>
+            </div>
+            <div class="form-group">
+                <label for="customer_comment">Здесь Вы можете написать комментарий к заказу</label>
+                <textarea id="customer_comment" name="customer_comment" class="form-control" rows="4" cols="40"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Оформить заказ</button>
+        </form>
+    </div>
+{% endblock %}

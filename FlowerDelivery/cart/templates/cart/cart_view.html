@@ -1,0 +1,64 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+    Корзина
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Корзина</h1>
+
+        {% if items %}
+            <form method="POST" action="{% url 'orders:order_review' %}"> <!-- Вызывается при нажатии "Оформить заказ" -->
+                {% csrf_token %}
+                <ul class="list-group">
+                    {% for item in items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ item.flower.name }}</strong> - {{ item.flower.price }} руб.
+                            </div>
+                            <div class="input-group" style="width: 100px;">
+                                <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" max="999" class="form-control quantity-input" data-flower-id="{{ item.flower.id }}" style="max-width: 60px;">
+                            </div>
+                            <a href="{% url 'cart:remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Удалить</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit" class="btn btn-primary mt-3">Просмотр заказа</button>
+            </form>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                В корзине пока нет товаров
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+    const addToCartUrl = "{% url 'cart:add_to_cart' 0 %}"; // Замените 'flower_id' на '0'
+
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            var flowerId = this.getAttribute('data-flower-id');
+            var newQuantity = this.value;
+
+            // Заменяем '0' в URL на фактический ID
+            var url = addToCartUrl.replace('0', flowerId);
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ quantity: newQuantity })
+            }).then(response => {
+                if (!response.ok) {
+                    alert('Ошибка при обновлении количества товара.');
+                }
+            }).catch(error => {
+                console.error('Ошибка:', error);
+            });
+        });
+    });
+</script>
+{% endblock %}

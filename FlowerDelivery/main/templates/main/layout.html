@@ -1,0 +1,84 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <title>
+        {% block title %}
+        {{ caption }}
+        {% endblock %}
+    </title>
+</head>
+<body>
+    <header class="bg-danger text-white py-3">
+        <div class="container">
+            <h1 class="h2 text-center">{{ caption }} — ваш надежный магазин цветов</h1>
+            <p class="text-center">Мы работаем для вас каждый день с {{ start_time }} до {{ end_time }}</p>
+			<div class="text-center">
+                {% if user.is_authenticated %}
+                    <p>Добро пожаловать, {{ user.username }}!</p>
+                    <a href="{% url 'accounts:profile' %}">Редактирование профиля</a>
+
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}">Регистрация</a>
+                    <a href="{% url 'accounts:login' %}">Вход</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="col-md-3 bg-light sidebar py-4">
+                <div class="text-center mb-4">
+                    <img src="{% static 'main/img/logo.png' %}" alt="Магазин цветов" class="img-fluid" width="150">
+                    <h1 class="h4 mt-2">{{ caption }}</h1>
+                </div>
+                <nav>
+                    {% include 'main/nav.html' %}
+                </nav>
+            </aside>
+
+            <main class="col-md-9">
+                        <!-- Блок для сообщений -->
+                {% if messages %}
+                    <div id="message-container">
+                        {% for message in messages %}
+                            <div class="message">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="content p-4">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-light text-center py-4">
+        <div class="container">
+            <p>© {{ year}} {{ country }}, {{ town }}.</p>
+            <p>{{ caption }}. Все права защищены.</p>
+            <p><a href="{% url 'main:privacy_policy' %}" class="text-dark">Политика конфиденциальности</a> |
+            <a href="{% url 'main:use_conditions' %}" class="text-dark">Условия использования</a></p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>
