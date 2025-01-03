@@ -2,6 +2,8 @@ from django import forms
 from .models import Order
 
 class OrderForm(forms.ModelForm):
+    phone = forms.CharField(max_length=15, required=True)
+
     class Meta:
         model = Order
         fields = ['address', 'delivery_date', 'delivery_time_interval', 'customer_comment']

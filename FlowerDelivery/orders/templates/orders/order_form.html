@@ -25,7 +25,7 @@
                 <input type="date" id="delivery_date" name="delivery_date" class="form-control" required min="{{ min_delivery_date }}">
             </div>
             <div class="form-group">
-                <label for="delivery_time_interval">Выберите для доставки временной интервал</label>
+                <label for="delivery_time_interval">Выберите удобный временной интервал для доставки</label>
                 <select id="delivery_time_interval" name="delivery_time_interval" class="form-control" required>
                     {% for interval in delivery_time_intervals %}
                         <option value="{{ interval }}" {% if interval == default_interval %}selected{% endif %}>{{ interval }}</option>

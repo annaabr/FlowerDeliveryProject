@@ -36,7 +36,7 @@ def order_form(request):
             contact_phone = form.cleaned_data.get('phone')
             # Добавляем номер телефона в начало комментария, если он есть
             if contact_phone:
-                order.customer_comment = f"{contact_phone}\n{order.customer_comment or ''}"
+                order.customer_comment = f"Телефон заказчика для связи с курьером: {contact_phone}\n{order.customer_comment or ''}"
 
             order.save()
 
