@@ -26,7 +26,7 @@ def order_review(request):
 
 
 @login_required
-def order_form(request):
+def order_form(request, order_id_to_copy):
     if request.method == 'POST':
         form = OrderForm(request.POST)  # Уберите request.user
         if form.is_valid():
@@ -41,44 +41,37 @@ def order_form(request):
 
             order.save()
 
-            # Сохранение товаров в заказе
-            cart = Cart.objects.get(user=request.user)
-            cart_items = CartItem.objects.filter(cart=cart)
-            for item in cart_items:
-                OrderItem.objects.create(order=order, flower=item.flower, quantity=item.quantity)
+            # Заказ формируется на основе корзины пользователя,
+            # после формирования заказа корзина очищается
+            if order_id_to_copy == 0:
+                # Сохранение товаров в заказе
+                cart = Cart.objects.get(user=request.user)
+                cart_items = CartItem.objects.filter(cart=cart)
+                for item in cart_items:
+                    OrderItem.objects.create(order=order, flower=item.flower, quantity=item.quantity)
 
-            # Очищаем корзину
-            cart_items.delete()
+                # Очищаем корзину
+                cart_items.delete()
+
+            # заказ является копией старого заказа с ID=order_id_to_copy, взятого из истории заказов
+            else:
+                # Получаем оригинальный заказ
+                original_order = Order.objects.get(id=order_id_to_copy, user=request.user)
+
+                # Копируем товары из оригинального заказа
+                for item in original_order.orderitem_set.all():
+                    OrderItem.objects.create(order=order, flower=item.flower, quantity=item.quantity)
 
             messages.success(request, 'Заказ успешно оформлен.')
             return redirect('goods:flower_catalog')
     else:
-        form = OrderForm()  # Уберите request.user
+        form = OrderForm()
 
     # Вычисляем дату доставки
     today = datetime.now().date()
     min_delivery_date = (today + timedelta(days=1)).isoformat()
 
-    return render(request, 'orders/order_form.html', {
-        **data,
-        'active_page': 'order_form',
-        'form': form,
-        'min_delivery_date': min_delivery_date,  # Передаем минимальную дату
-    })
-
-
-    # Вычисляем дату доставки
-    today = datetime.now().date()
-    min_delivery_date = (today + timedelta(days=1)).isoformat()
-
-    return render(request, 'orders/order_form.html', {
-        **data,
-        'active_page': 'order_form',
-        'form': form,
-        'min_delivery_date': min_delivery_date,  # Передаем минимальную дату
-    })
-
-
+    return render(request, 'orders/order_form.html', {**data, 'active_page': 'order_form', 'form': form, 'min_delivery_date': min_delivery_date, 'order_id_to_copy': order_id_to_copy})
 
 @login_required
 def order_history(request):
@@ -92,24 +85,5 @@ def order_history(request):
 
 @login_required
 def repeat_order(request, order_id):
-    original_order = Order.objects.get(id=order_id, user=request.user)
-
-
-    # Создание нового заказа на основе оригинального
-    new_order = Order.objects.create(
-        user=request.user,
-        address=original_order.address,
-        delivery_date=original_order.delivery_date,
-        delivery_time_interval=original_order.delivery_time_interval,
-        customer_comment=original_order.customer_comment,
-        status='new'
-    )
-
-#    for item in original_order.orderitem_set.all():
-#        new_item = OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
-#        print(f"Created new OrderItem: {new_item} for order {new_order.id}")
-
-    for item in original_order.orderitem_set.all():
-        OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
-
-    return redirect('orders:order_form')
+    # заказ является копией ранее созданного заказа с ID=order_id
+    return redirect('orders:order_form',order_id_to_copy=order_id)

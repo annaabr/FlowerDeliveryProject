@@ -11,9 +11,10 @@
             <div class="order-list">
                 {% for order in orders %}
                     <div class="order">
-                        <h3>Заказ от {{ order.created_at|date:"d.m.Y H:i" }}</h3>
+                        <h3>Заказ от {{ order.created_at|date:"d.m.Y H:i" }} (ID {{ order.id }})</h3>
+                        <h5>Статус заказа: {{ order.get_status_display }}</h5>
+                        <br>
                         <div class="flowers">
-                            <p>Состав заказа:</p>
                             <ul>
                                 {% for item in order.orderitem_set.all %}
                                     <li>
@@ -23,7 +24,11 @@
                                 {% endfor %}
                             </ul>
                         </div>
-                        <p>Стоимость заказа: {{ order.total_price }} руб.</p>
+                        <h3>Стоимость заказа: {{ order.total_price }} руб.</h3>
+
+                        <p>Адрес доставки: {{ order.address }}</p>
+                        <p>Время доставки: {{ order.delivery_time_interval }}</p>
+
                         <a href="{% url 'orders:repeat_order' order.id %}" class="btn btn-primary">Повторить заказ</a>
                     </div>
                     <br><br><br>

@@ -10,7 +10,7 @@
 
         <a href="{% url 'cart:cart_view' %}" class="btn btn-secondary float-right">Отменить заказ</a>
 
-        <form method="POST" action="{% url 'orders:order_form' %}">
+        <form method="POST" action="{% url 'orders:order_form' order_id_to_copy=order_id_to_copy %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="username">Имя заказчика</label>

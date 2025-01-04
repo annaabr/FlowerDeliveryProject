@@ -37,10 +37,10 @@
             <p class="text-danger">Для оформления заказа необходимо предварительно внести, свои данные в таблицу зарегистрированных пользователей.</p>
             <a href="{% url 'accounts:profile' %}" class="btn btn-warning">Внести данные</a>
         {% else %}
-            <button type="button" class="btn btn-success mt-3" onclick="window.location.href='{% url 'orders:order_form' %}'">Указать данные для оформления доставки</button>
+            <button type="button" class="btn btn-success mt-3" data-url="{% url 'orders:order_form' order_id_to_copy=0 %}" onclick="window.location.href=this.dataset.url">Указать данные для оформления доставки</button>
         {% endif %}
     {% else %}
-        <button type="button" class="btn btn-success mt-3" onclick="window.location.href='{% url 'orders:order_form' %}'">Указать данные для оформления доставки</button>
+        <button type="button" class="btn btn-success mt-3" data-url="{% url 'orders:order_form' order_id_to_copy=0 %}" onclick="window.location.href=this.dataset.url">Указать данные для оформления доставки</button>
     {% endif %}
 </div>
 {% endblock %}

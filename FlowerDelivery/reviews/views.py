@@ -31,10 +31,3 @@ def flower_reviews(request, flower_id):
     reviews = Review.objects.filter(flower=flower).order_by('-created_at')  # Сортируем по убыванию даты создания
 
     return render(request, 'reviews/flower_reviews.html', {**data, 'flower': flower, 'reviews': reviews, 'active_page': 'flower_reviews'})
-
-# def flower_reviews(request, flower_id):
-    #     flower = get_object_or_404(Flower, id=flower_id)
-    # reviews = Review.objects.filter(flower=flower)
-
-    # return render(request, 'reviews/flower_reviews.html', {**data, 'flower': flower, 'reviews': reviews, 'active_page': 'flower_reviews'})
-
