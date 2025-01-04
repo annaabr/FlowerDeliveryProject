@@ -79,13 +79,6 @@ def order_form(request):
     })
 
 
-@login_required
-def confirm_order(request):
-    return render(request, 'orders/confirm_order.html', {
-        **data,
-        'active_page': 'order_form',
-    })
-
 
 @login_required
 def order_history(request):
@@ -101,6 +94,7 @@ def order_history(request):
 def repeat_order(request, order_id):
     original_order = Order.objects.get(id=order_id, user=request.user)
 
+
     # Создание нового заказа на основе оригинального
     new_order = Order.objects.create(
         user=request.user,
@@ -111,11 +105,11 @@ def repeat_order(request, order_id):
         status='new'
     )
 
-    for item in original_order.orderitem_set.all():
-        new_item = OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
-        print(f"Created new OrderItem: {new_item} for order {new_order.id}")
-
 #    for item in original_order.orderitem_set.all():
-#        OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
+#        new_item = OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
+#        print(f"Created new OrderItem: {new_item} for order {new_order.id}")
+
+    for item in original_order.orderitem_set.all():
+        OrderItem.objects.create(order=new_order, flower=item.flower, quantity=item.quantity)
 
     return redirect('orders:order_form')
