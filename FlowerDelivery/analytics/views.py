@@ -44,14 +44,15 @@ def generate_report(request):
     orders_list_completed = ','.join(map(str, orders_by_status['completed']))
     orders_list_cancelled = ','.join(map(str, orders_by_status['cancelled']))
 
+
     # Включаем заказы из предыдущего отчета, если они были изменены
     for order_id in previous_orders:
         if order_id in current_orders_ids:
             continue  # Пропускаем, если заказ уже есть в текущих заказах
 
         order = Order.objects.get(id=order_id)
-        if order.status not in ['completed', 'cancelled']:
-            orders_by_status[order.status].append(order.id)
+    if order.status not in ['completed', 'cancelled']:
+        orders_by_status[order.status].append(order.id)
 
     # Создаем отчет
     report = Report.objects.create(

@@ -3,7 +3,9 @@
   <li><a href="{% url 'goods:flower_catalog' %}">Каталог цветов</a></li>
   <li><a href="{% url 'cart:cart_view' %}">Перейти в корзину</a></li>
   <li><a href="{% url 'orders:order_history' %}">История заказов</a></li>
+  <br><br>
   {% if user.is_staff %}
+    <li><a href="{% url 'admin:index' %}">Админ. панель</a></li>
     <li><a href="{% url 'generate_report' %}">Генерация отчета</a></li>
   {% endif %}
 </ul>

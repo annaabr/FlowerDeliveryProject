@@ -105,7 +105,8 @@ COMMON_DICT = {
        'delivery_time_intervals' : ['09:00 - 11:00', '11:00 - 13:00', '13:00 - 15:00', '15:00 - 17:00', '17:00 - 19:00','19:00 - 21:00']
    }
 
-TELEGRAM_BOT_TOKEN = '7103387978: AAHPys-AhKpYN2YD3YC8ua-i_xFNZpDDkk0'
+TELEGRAM_BOT_TOKEN = '7103387978:AAHPys-AhKpYN2YD3YC8ua-i_xFNZpDDkk0'
+TELEGRAM_CHAT_ID = '708732931'
 
 # Конец секции с глобальными переменными этого проекта
 #-------------------------------------------------------------------------

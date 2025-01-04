@@ -5,6 +5,7 @@ from cart.models import Cart, CartItem
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from django.contrib import messages
+from .bot import send_order_notification
 
 from django.conf import settings
 
@@ -61,6 +62,10 @@ def order_form(request, order_id_to_copy):
                 # Копируем товары из оригинального заказа
                 for item in original_order.orderitem_set.all():
                     OrderItem.objects.create(order=order, flower=item.flower, quantity=item.quantity)
+
+
+            # Отправка в телеграм уведомления о новом заказе
+            send_order_notification(order)
 
             messages.success(request, 'Заказ успешно оформлен.')
             return redirect('goods:flower_catalog')
