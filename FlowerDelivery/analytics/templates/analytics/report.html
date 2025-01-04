@@ -1,0 +1,29 @@
+{% extends 'main/layout.html' %}
+
+{% block content %}
+<h2>Отчет за {{ report.created_at.date }}</h2>
+<p>Количество заказов: {{ orders_count }}</p>
+<p>Выручка: {{ revenue }} руб.</p>
+
+<h3>Список заказов по статусам:</h3>
+<ul>
+    {% for status, orders in orders_by_status.items %}
+        <li>{{ status }}:
+            {% if orders %}
+                {{ orders|join:", " }}
+            {% else %}
+                Нет заказов
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+<form action="{% url 'generate_report' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Сгенерировать отчет</button>
+</form>
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+{% endblock %}
