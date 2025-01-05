@@ -8,8 +8,17 @@
 
 {% block content %}
     <h1>Отчет за {{ report.created_at }}</h1>
-    <p>Количество заказов: {{ report.orders_count }}</p>
-    <p>Выручка: {{ report.revenue }} руб.</p>
+     <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <p>Количество заказов: {{ report.orders_count }}</p>
+            <p>Выручка: {{ report.revenue }} руб.</p>
+        </div>
+
+        <form method="POST" action="{% url 'publish_report' report.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Опубликовать отчет</button>
+        </form>
+    </div>
 
     <h2>Заказы по статусам:</h2>
     <table class="table table-bordered">
@@ -42,5 +51,7 @@
              {% endif %}
         </tbody>
     </table>
+
+
 
 {% endblock %}

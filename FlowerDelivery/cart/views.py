@@ -14,9 +14,6 @@ data = settings.COMMON_DICT
 @login_required
 def add_to_cart(request, flower_id):
     flower = get_object_or_404(Flower, id=flower_id)
-    print(f"Adding 1 flower {flower.name} to cart for user {request.user.username}")
-    print(f"Start add_to_cart for user {request.user.username}")
-    print(f"Adding 2 flower {flower.name} to cart for user {request.user.username}")
 
     # Получаем или создаем корзину для пользователя
     cart, created = Cart.objects.get_or_create(user=request.user)
@@ -39,7 +36,6 @@ def add_to_cart(request, flower_id):
 
 @login_required
 def remove_from_cart(request, cart_item_id):
-    print("Start remove_from_cart ==============================================================")
     cart = get_object_or_404(Cart, user=request.user)
 
     # Получаем элемент с соответствующим cart_item_id и удаляем его
@@ -52,7 +48,6 @@ def remove_from_cart(request, cart_item_id):
 
 @login_required
 def cart_view(request):
-    print("Start cart_view ==============================================================")
     cart, created = Cart.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
