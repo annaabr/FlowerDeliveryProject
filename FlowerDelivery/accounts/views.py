@@ -6,6 +6,16 @@ from django.conf import settings
 
 data = settings.COMMON_DICT
 
+from django.contrib.auth.views import LoginView
+
+class CustomLoginView(LoginView):
+    template_name = 'accounts/login.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(settings.COMMON_DICT)  # Добавляем данные из COMMON_DICT в контекст
+        return context
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)  # Используем CustomUserCreationForm
@@ -17,8 +27,11 @@ def register(request):
         form = CustomUserCreationForm()  # Создаем пустую форму при GET-запросе
     return render(request, 'accounts/register.html', {**data, 'form': form, 'acitve_page': 'register'})
 
-
 def profile(request):
+    # Проверка, аутентифицирован ли пользователь
+    if not request.user.is_authenticated:
+        return redirect('cart:cart_view')  # Перенаправление незалогиненного пользователя на страницу cart:cart_view
+
     profile, created = Profile.objects.get_or_create(user=request.user)  # Получаем или создаем профиль пользователя
     if request.method == 'POST':
         # Обработка формы редактирования профиля

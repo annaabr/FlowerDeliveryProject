@@ -14,3 +14,5 @@ class ReviewForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Устанавливаем значение по умолчанию для поля rating
         self.fields['rating'].initial = 5
+        # Делаем поле comment необязательным
+        self.fields['comment'].required = False

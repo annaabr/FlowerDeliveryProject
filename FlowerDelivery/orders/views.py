@@ -16,6 +16,10 @@ def order_review(request):
     cart = Cart.objects.get(user=request.user)
     cart_items = CartItem.objects.filter(cart=cart)
 
+    # Проверяем, пуста ли корзина
+    if not cart_items.exists():
+        return redirect('cart:cart_view')  # Перенаправляем на cart_view, если корзина пуста
+
     total_price = sum(item.flower.price * item.quantity for item in cart_items)
 
     return render(request, 'orders/order_review.html', {
@@ -28,6 +32,16 @@ def order_review(request):
 
 @login_required
 def order_form(request, order_id_to_copy):
+    # Проверяем, пуста ли корзина и order_id_to_copy равен 0
+    if order_id_to_copy == 0:
+        try:
+            cart = Cart.objects.get(user=request.user)
+            cart_items = CartItem.objects.filter(cart=cart)
+            if not cart_items.exists():  # Проверяем, есть ли товары в корзине
+                return redirect('cart:cart_view')  # Перенаправляем на страницу корзины
+        except Cart.DoesNotExist:
+            return redirect('cart:cart_view')  # Если корзина не найдена, тоже перенаправляем
+
     if request.method == 'POST':
         form = OrderForm(request.POST)  # Уберите request.user
         if form.is_valid():
