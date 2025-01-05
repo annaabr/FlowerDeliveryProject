@@ -10,7 +10,7 @@ class Report(models.Model):
     orders_list_in_progress = models.TextField(default='')  # Список ID заказов в работе
     orders_list_in_delivery = models.TextField(default='')  # Список ID заказов в доставке
     orders_list_completed = models.TextField(default='')  # Список ID выполненных заказов
-    orders_list_cancelled = models.TextField(default='')  # Список ID отменённых заказов
+    orders_list_cancelled = models.TextField(default='')  # Список ID отмененных заказов
 
     def __str__(self):
         return f"Отчет от {self.created_at}"
