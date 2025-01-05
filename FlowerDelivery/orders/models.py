@@ -10,7 +10,7 @@ class Order(models.Model):
         ('in_progress', 'В работе'),
         ('in_delivery', 'В доставке'),
         ('completed', 'Выполнен'),
-        ('cancelled', 'Отменён'),
+        ('cancelled', 'Не выполнен в срок'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)

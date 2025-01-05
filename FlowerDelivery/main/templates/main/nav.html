@@ -6,6 +6,6 @@
   <br><br>
   {% if user.is_staff %}
     <li><a href="{% url 'admin:index' %}">Админ. панель</a></li>
-    <li><a href="{% url 'generate_report' %}">Генерация отчета</a></li>
+    <li><a href="{% url 'create_report' %}">Генерация отчета</a></li>
   {% endif %}
 </ul>

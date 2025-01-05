@@ -1,29 +1,46 @@
 {% extends 'main/layout.html' %}
 
+{% load custom_filters %}
+
+{% block title %}
+    Детали отчета
+{% endblock %}
+
 {% block content %}
-<h2>Отчет за {{ report.created_at.date }}</h2>
-<p>Количество заказов: {{ orders_count }}</p>
-<p>Выручка: {{ revenue }} руб.</p>
+    <h1>Отчет за {{ report.created_at }}</h1>
+    <p>Количество заказов: {{ report.orders_count }}</p>
+    <p>Выручка: {{ report.revenue }} руб.</p>
 
-<h3>Список заказов по статусам:</h3>
-<ul>
-    {% for status, orders in orders_by_status.items %}
-        <li>{{ status }}:
-            {% if orders %}
-                {{ orders|join:", " }}
-            {% else %}
-                Нет заказов
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
+    <h2>Заказы по статусам:</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Статус</th>
+                <th>Количество заказов</th>
+                <th>Список заказов</th>
+            </tr>
+        </thead>
+        <tbody>
+             {% if orders_by_status %}
+                 {% for status, orders in orders_by_status.items %}
+                     <tr>
+                         <td>{{ status_dict|get_item:status|capfirst }}</td>
+                         <td>{{ orders|length }}</td>
+                         <td>
+                             {% if orders %}
+                                 {{ orders|join:", " }}
+                             {% else %}
+                                 Нет заказов
+                             {% endif %}
+                         </td>
+                     </tr>
+                 {% endfor %}
+             {% else %}
+                 <tr>
+                     <td colspan="3">Нет заказов</td>
+                 </tr>
+             {% endif %}
+        </tbody>
+    </table>
 
-<form action="{% url 'generate_report' %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Сгенерировать отчет</button>
-</form>
-
-{% if error %}
-    <p style="color: red;">{{ error }}</p>
-{% endif %}
 {% endblock %}
