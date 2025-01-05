@@ -3,10 +3,10 @@ from django.contrib.auth import login
 from .forms import CustomUserCreationForm  # Импортируем вашу кастомную форму
 from .models import Profile
 from django.conf import settings
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.urls import reverse_lazy
 
 data = settings.COMMON_DICT
-
-from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'
@@ -15,6 +15,13 @@ class CustomLoginView(LoginView):
         context = super().get_context_data(**kwargs)
         context.update(settings.COMMON_DICT)  # Добавляем данные из COMMON_DICT в контекст
         return context
+
+    def get_success_url(self):
+        return reverse_lazy('goods:flower_catalog')  # Перенаправление на goods:catalog
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    success_url = reverse_lazy('accounts:password_change_done')
 
 def register(request):
     if request.method == 'POST':
