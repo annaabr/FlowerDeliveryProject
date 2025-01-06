@@ -27,6 +27,10 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Дата и время создания заказа
     customer_comment = models.CharField(max_length=250, blank=True)  # Комментарий пользователя
 
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     flower = models.ForeignKey(Flower, on_delete=models.CASCADE)

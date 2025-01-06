@@ -12,5 +12,9 @@ class Report(models.Model):
     orders_list_completed = models.TextField(default='')  # Список ID выполненных заказов
     orders_list_cancelled = models.TextField(default='')  # Список ID отмененных заказов
 
+    class Meta:
+        verbose_name = 'Отчет'
+        verbose_name_plural = 'Отчеты'
+
     def __str__(self):
         return f"Отчет от {self.created_at}"
