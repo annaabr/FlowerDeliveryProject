@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "orders.middleware.TimeBasedAccessMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -70,20 +71,6 @@ DATABASES = {
 # чтобы Django мог отправлять электронные письма
 # для восстановления пароля пользователя
 
-'''
-# Пыталась через яндекс
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.com' # 'smtp.your-email-provider.com'
-
-# EMAIL_PORT = 587 # Для TLS
-# EMAIL_USE_TLS = True
-
-EMAIL_PORT = 465  # Для SSL
-EMAIL_USE_SSL = True
-
-EMAIL_HOST_USER = 'annaabr@yandex.ru' # 'your-email@example.com'
-EMAIL_HOST_PASSWORD = 'AnnaYandex1969' # 'your-email-password'
-'''
 # Теперь через google
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST =  'smtp.gmail.com' # 'smtp.your-email-provider.com'
