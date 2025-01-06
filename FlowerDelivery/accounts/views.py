@@ -5,10 +5,25 @@ from .models import Profile
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 data = settings.COMMON_DICT
 
-from django.contrib.auth.views import LoginView
+def change_password(request):
+    if not request.user.is_authenticated:
+        return redirect('cart:cart_view')
+
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Сохраняем сессию пользователя
+            return redirect('main:index')  # Переход на страницу после успешной смены пароля
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'accounts/change_password.html', {**data, 'form': form})
 
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html'

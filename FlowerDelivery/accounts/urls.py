@@ -9,5 +9,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),  # Используем кастомный класс
     path('logout/', LogoutView.as_view(next_page='main:index'), name='logout'),
-    path('profile/', views.profile, name='profile')
+    path('profile/', views.profile, name='profile'),
+    path('change_password/', views.change_password, name='change_password'),
 ]
