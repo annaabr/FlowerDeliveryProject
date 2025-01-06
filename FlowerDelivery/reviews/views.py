@@ -10,22 +10,35 @@ data = settings.COMMON_DICT
 
 def create_review(request, flower_id):
     flower = get_object_or_404(Flower, id=flower_id)
+    review = Review.objects.filter(user=request.user, flower=flower).first()
 
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        if review is not None:
+            form = ReviewForm(request.POST, instance=review)  # Редактируем существующий отзыв
+        else:
+            form = ReviewForm(request.POST)  # Создаем новый отзыв
+
         if form.is_valid():
             review = form.save(commit=False)
             review.user = request.user
             review.flower = flower
             review.save()
-            messages.success(request, 'Ваш отзыв успешно добавлен!')
+            messages.success(request, 'Ваш отзыв успешно добавлен/обновлен!')
             return redirect('goods:flower_catalog')  # Перенаправление на страницу каталога
     else:
-        form = ReviewForm()
+        if review is not None:
+            form = ReviewForm(instance=review)  # Загружаем форму с существующим отзывом
+        else:
+            form = ReviewForm()
 
     return render(request, 'reviews/create_review.html',
                   {**data, 'flower': flower, 'form': form, 'active_page': 'create_review'})
 
+def flower_reviews(request, flower_id):
+    flower = get_object_or_404(Flower, id=flower_id)
+    reviews = Review.objects.filter(flower=flower).order_by('-created_at')  # Сортируем по убыванию даты создания
+
+    return render(request, 'reviews/flower_reviews.html', {**data, 'flower': flower, 'reviews': reviews, 'active_page': 'flower_reviews'})
 def flower_reviews(request, flower_id):
     flower = get_object_or_404(Flower, id=flower_id)
     reviews = Review.objects.filter(flower=flower).order_by('-created_at')  # Сортируем по убыванию даты создания
